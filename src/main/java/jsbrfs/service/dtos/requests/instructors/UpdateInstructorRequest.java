@@ -3,6 +3,7 @@ package jsbrfs.service.dtos.requests.instructors;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
@@ -24,6 +25,7 @@ public class UpdateInstructorRequest {
     private LocalDate dateOfBirth;
 
     @NotBlank
+    @Size(min = 11, max = 11)
     private String nationalIdentity;
 
     @Email

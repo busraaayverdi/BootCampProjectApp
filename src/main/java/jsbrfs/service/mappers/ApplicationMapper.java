@@ -11,10 +11,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ApplicationMapper {
-    ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
-
     @Mapping(source = "applicantId", target = "applicant.id")
     @Mapping(source = "bootcampId", target = "bootcamp.id")
     Application applicationFromCreateRequest(CreateApplicationRequest request);

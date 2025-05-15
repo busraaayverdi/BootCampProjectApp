@@ -13,7 +13,6 @@ public interface UserService {
     CreateUserResponse add(CreateUserRequest request);
     UpdateUserResponse update(UpdateUserRequest request);
     void delete(Long id);
-
     List<GetListUserResponse> getAll();
     GetByIdUserResponse getById(Long id);
 }

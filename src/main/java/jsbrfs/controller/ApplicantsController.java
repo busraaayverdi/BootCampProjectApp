@@ -30,7 +30,7 @@ public class ApplicantsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<DeleteApplicantResponse> delete(@PathVariable Long id) {
         applicantService.delete(id);
         return ResponseEntity.ok().build();
     }

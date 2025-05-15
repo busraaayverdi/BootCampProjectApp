@@ -2,6 +2,7 @@ package jsbrfs.service.dtos.requests.applicants;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
@@ -23,6 +24,7 @@ public class UpdateApplicantRequest {
     private LocalDate dateOfBirth;
 
     @NotNull
+    @Size(min = 11, max = 11)
     private String nationalIdentity;
 
     @NotNull

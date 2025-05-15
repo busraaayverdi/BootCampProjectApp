@@ -35,13 +35,13 @@ public class UsersController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateUserResponse add(@PathVariable CreateUserRequest request){
+    public CreateUserResponse add(@RequestBody CreateUserRequest request){
         return service.add(request);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public UpdateUserResponse update(@PathVariable UpdateUserRequest request){
+    public UpdateUserResponse update(@RequestBody UpdateUserRequest request){
         return service.update(request);
     }
 

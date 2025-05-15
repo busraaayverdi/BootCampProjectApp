@@ -18,16 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository repository;
+    private final ApplicationMapper applicationMapper;
 
-    public ApplicationServiceImpl(ApplicationRepository repository) {
+    public ApplicationServiceImpl(ApplicationRepository repository, ApplicationMapper applicationMapper) {
         this.repository = repository;
+        this.applicationMapper = applicationMapper;
     }
 
     @Override
     public CreateApplicationResponse add(CreateApplicationRequest request) {
-        Application application = ApplicationMapper.INSTANCE.applicationFromCreateRequest(request);
+        Application application = applicationMapper.applicationFromCreateRequest(request);
         application = repository.save(application);
-        return ApplicationMapper.INSTANCE.createResponseFromApplication(application);
+        return applicationMapper.createResponseFromApplication(application);
     }
 
     @Override
@@ -35,11 +37,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application existing = repository.findById(request.id())
                 .orElseThrow(() -> new RuntimeException("Application not found by id: " + request.id()));
 
-        Application updated = ApplicationMapper.INSTANCE.applicationFromUpdateRequest(request);
+        Application updated = applicationMapper.applicationFromUpdateRequest(request);
         updated.setId(existing.getId());
         Application saved = repository.save(updated);
 
-        return ApplicationMapper.INSTANCE.updateResponseFromApplication(saved);
+        return applicationMapper.updateResponseFromApplication(saved);
     }
 
     @Override
@@ -54,20 +56,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     public GetByIdApplicationResponse getById(Long id) {
         Application application = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Application not found by id: " + id));
-        return ApplicationMapper.INSTANCE.getByIdResponseFromApplication(application);
+        return applicationMapper.getByIdResponseFromApplication(application);
     }
 
     @Override
     public List<GetListApplicationResponse> getAll() {
         return repository.findAll().stream()
-                .map(ApplicationMapper.INSTANCE::getListResponseFromApplication)
+                .map(applicationMapper::getListResponseFromApplication)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<GetListApplicationResponse> getByApplicantId(Long applicantId) {
         return repository.findByApplicantId(applicantId).stream()
-                .map(ApplicationMapper.INSTANCE::getListResponseFromApplication)
+                .map(applicationMapper::getListResponseFromApplication)
                 .collect(Collectors.toList());
     }
 }
+
