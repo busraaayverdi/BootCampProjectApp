@@ -2,10 +2,8 @@ package jsbrfs.service.abstracts;
 
 import jsbrfs.service.dtos.requests.applications.CreateApplicationRequest;
 import jsbrfs.service.dtos.requests.applications.UpdateApplicationRequest;
-import jsbrfs.service.dtos.responses.applications.CreateApplicationResponse;
-import jsbrfs.service.dtos.responses.applications.GetByIdApplicationResponse;
-import jsbrfs.service.dtos.responses.applications.GetListApplicationResponse;
-import jsbrfs.service.dtos.responses.applications.UpdateApplicationResponse;
+import jsbrfs.service.dtos.responses.applicants.DeleteApplicantResponse;
+import jsbrfs.service.dtos.responses.applications.*;
 
 import java.util.List;
 
@@ -15,5 +13,9 @@ public interface ApplicationService {
     void delete(Long id);
     GetByIdApplicationResponse getById(Long id);
     List<GetListApplicationResponse> getAll();
-    List<GetListApplicationResponse> getByApplicantId(Long applicantId);
+    List<GetListApplicationResponse> getApplicationsByApplicantUsername(String username);
+    List<GetByIdApplicationResponse> getApplicationsByApplicantId(Long applicantId);
+    DeleteApplicationResponse softDelete(int id);
+
+
 }

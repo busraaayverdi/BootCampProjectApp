@@ -3,9 +3,12 @@ package jsbrfs.entity;
 import jakarta.persistence.*;
 import jsbrfs.entity.enums.ApplicationState;
 import jsbrfs.entity.enums.BootcampState;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "applications")
+@SQLRestriction(value = "deleted_at IS NULL") //silinmiş verileri geri gösterme
+
 public class Application {
 
     @Id

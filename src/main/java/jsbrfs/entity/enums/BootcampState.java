@@ -5,5 +5,5 @@ public enum BootcampState {
     OPEN_FOR_APPLICATION,
     IN_PROGRESS,
     FINISHED,
-    CANCELLED
+    CLOSED, CANCELLED
 }

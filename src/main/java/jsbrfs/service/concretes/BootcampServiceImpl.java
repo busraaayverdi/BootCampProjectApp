@@ -2,7 +2,9 @@ package jsbrfs.service.concretes;
 
 import jsbrfs.entity.Bootcamp;
 import jsbrfs.entity.enums.BootcampState;
+import jsbrfs.exceptions.types.BusinessException;
 import jsbrfs.repository.BootcampRepository;
+import jsbrfs.rules.BootcampBusinessRules;
 import jsbrfs.service.abstracts.BootcampService;
 import jsbrfs.service.dtos.requests.bootcamps.CreateBootcampRequest;
 import jsbrfs.service.dtos.requests.bootcamps.UpdateBootcampRequest;
@@ -18,23 +20,35 @@ import java.util.stream.Collectors;
 
 @Service
 public class BootcampServiceImpl implements BootcampService {
-    private final BootcampRepository repository;
 
-    public BootcampServiceImpl(BootcampRepository repository) {
+    private final BootcampRepository repository;
+    private final BootcampBusinessRules bootcampBusinessRules;
+
+    public BootcampServiceImpl(BootcampRepository repository, BootcampBusinessRules bootcampBusinessRules) {
         this.repository = repository;
+        this.bootcampBusinessRules = bootcampBusinessRules;
     }
 
     @Override
     public CreateBootcampResponse add(CreateBootcampRequest request) {
+        // Kuralları uygula
+        bootcampBusinessRules.checkIfStartDateBeforeEndDate(request.getStartDate(), request.getEndDate());
+        bootcampBusinessRules.checkIfBootcampNameExists(request.getName());
+        bootcampBusinessRules.checkIfInstructorExistsById(request.getInstructorId());
+
+        // Bootcamp oluştur ve kaydet
         Bootcamp bootcamp = BootcampMapper.INSTANCE.bootcampFromCreateRequest(request);
         bootcamp = repository.save(bootcamp);
+
         return BootcampMapper.INSTANCE.createResponseFromBootcamp(bootcamp);
     }
 
     @Override
     public UpdateBootcampResponse update(UpdateBootcampRequest request) {
         Bootcamp existing = repository.findById(request.id())
-                .orElseThrow(() -> new RuntimeException("Bootcamp not found by id: " + request.id()));
+                .orElseThrow(() -> new BusinessException("Bootcamp not found by id: " + request.id()));
+
+        // Kuralları da güncelleme öncesi kontrol etmek istersen buraya ekle
 
         Bootcamp updated = BootcampMapper.INSTANCE.bootcampFromUpdateRequest(request);
         updated.setId(existing.getId());
@@ -46,7 +60,7 @@ public class BootcampServiceImpl implements BootcampService {
     @Override
     public void delete(Long id) {
         Bootcamp bootcamp = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bootcamp not found by id: " + id));
+                .orElseThrow(() -> new BusinessException("Bootcamp not found by id: " + id));
 
         repository.delete(bootcamp);
     }
@@ -54,7 +68,7 @@ public class BootcampServiceImpl implements BootcampService {
     @Override
     public GetByIdBootcampResponse getById(Long id) {
         Bootcamp bootcamp = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bootcamp not found by id: " + id));
+                .orElseThrow(() -> new BusinessException("Bootcamp not found by id: " + id));
         return BootcampMapper.INSTANCE.getByIdResponseFromBootcamp(bootcamp);
     }
 

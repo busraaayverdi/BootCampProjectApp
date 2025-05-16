@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface BootcampRepository extends JpaRepository<Bootcamp, Long> {
     List<Bootcamp> findByBootcampState(BootcampState bootcampState);
+
+    boolean existsByName(String name);
 }

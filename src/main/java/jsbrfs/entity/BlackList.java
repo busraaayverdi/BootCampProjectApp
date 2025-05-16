@@ -1,11 +1,14 @@
 package jsbrfs.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "blackLists")
+@SQLRestriction(value = "deleted_at IS NULL") //silinmiş verileri geri gösterme
+
 public class BlackList {
 
     @Id

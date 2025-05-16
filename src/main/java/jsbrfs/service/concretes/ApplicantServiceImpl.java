@@ -1,7 +1,9 @@
 package jsbrfs.service.concretes;
 
 import jsbrfs.entity.Applicant;
+import jsbrfs.exceptions.types.BusinessException;
 import jsbrfs.repository.ApplicantRepository;
+import jsbrfs.rules.ApplicantBusinessRules;
 import jsbrfs.service.abstracts.ApplicantService;
 import jsbrfs.service.dtos.requests.applicants.CreateApplicantRequest;
 import jsbrfs.service.dtos.requests.applicants.UpdateApplicantRequest;
@@ -17,14 +19,20 @@ import java.util.stream.Collectors;
 @Service
 public class ApplicantServiceImpl implements ApplicantService {
 
+    private final ApplicantBusinessRules applicantBusinessRules;
     private final ApplicantRepository applicantRepository;
 
-    public ApplicantServiceImpl(ApplicantRepository applicantRepository) {
+    public ApplicantServiceImpl(ApplicantRepository applicantRepository, ApplicantBusinessRules applicantBusinessRules) {
         this.applicantRepository = applicantRepository;
+        this.applicantBusinessRules = applicantBusinessRules;
     }
+
 
     @Override
     public CreateApplicantResponse add(CreateApplicantRequest request) {
+
+        applicantBusinessRules.checkIfUsernameAlreadyExists(request.getUserName());
+
         Applicant applicant = new Applicant();
 
         applicant.setUserName(request.getUserName());
@@ -44,8 +52,10 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     public UpdateApplicantResponse update(UpdateApplicantRequest request) {
+        applicantBusinessRules.checkIfApplicantExistsById(request.getId());
+
         Applicant applicant = applicantRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Applicant not found"));
+                .orElseThrow(() -> new BusinessException("Applicant not found"));
 
         applicant.setUserName(request.getUserName());
         applicant.setFirstName(request.getFirstName());
@@ -65,15 +75,19 @@ public class ApplicantServiceImpl implements ApplicantService {
 
     @Override
     public void delete(Long id) {
+        applicantBusinessRules.checkIfApplicantExistsById(id);
+
         Applicant applicant = applicantRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Applicant not found"));
+                .orElseThrow(() -> new BusinessException("Applicant not found"));
         applicantRepository.delete(applicant);
     }
 
     @Override
     public GetByIdApplicantResponse getById(Long id) {
+        applicantBusinessRules.checkIfApplicantExistsById(id);
+
         Applicant applicant = applicantRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Applicant not found"));
+                .orElseThrow(() -> new BusinessException("Applicant not found"));
 
         return mapToGetByIdApplicantResponse(applicant);
     }

@@ -2,11 +2,14 @@ package jsbrfs.entity;
 
 import jakarta.persistence.*;
 import jsbrfs.entity.enums.BootcampState;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "bootcamps")
+@SQLRestriction(value = "deleted_at IS NULL") //silinmiş verileri geri gösterme
+
 public class Bootcamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

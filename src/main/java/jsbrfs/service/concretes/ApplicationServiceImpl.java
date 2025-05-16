@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository repository;
     private final ApplicationMapper applicationMapper;
+    private final ApplicationRepository applicationRepository;
 
-    public ApplicationServiceImpl(ApplicationRepository repository, ApplicationMapper applicationMapper) {
+    public ApplicationServiceImpl(ApplicationRepository repository, ApplicationMapper applicationMapper, ApplicationRepository applicationRepository) {
         this.repository = repository;
         this.applicationMapper = applicationMapper;
+        this.applicationRepository = applicationRepository;
     }
 
     @Override
@@ -65,11 +67,20 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .map(applicationMapper::getListResponseFromApplication)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<GetListApplicationResponse> getApplicationsByApplicantUsername(String username) {
+        List<Application> applications = applicationRepository.findByApplicantUsername(username);
+        return applications.stream()
+                .map(applicationMapper::getListResponseFromApplication)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
-    public List<GetListApplicationResponse> getByApplicantId(Long applicantId) {
-        return repository.findByApplicantId(applicantId).stream()
-                .map(applicationMapper::getListResponseFromApplication)
+    public List<GetByIdApplicationResponse> getApplicationsByApplicantId(Long applicantId) {
+        List<Application> applications = applicationRepository.findByApplicantIdNative(applicantId);
+        return applications.stream()
+                .map(applicationMapper::getByIdResponseFromApplication)
                 .collect(Collectors.toList());
     }
 }

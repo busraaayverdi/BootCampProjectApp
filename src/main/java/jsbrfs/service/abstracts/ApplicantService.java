@@ -12,4 +12,5 @@ public interface ApplicantService {
     void delete(Long id);
     List<GetListApplicantResponse> getAll();
     GetByIdApplicantResponse getById(Long id);
+    DeleteApplicantResponse softDelete(int id);
 }
